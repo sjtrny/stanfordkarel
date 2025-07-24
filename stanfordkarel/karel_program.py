@@ -19,6 +19,8 @@ Date of Creation: 10/1/2019
 
 from __future__ import annotations
 
+from random import uniform
+
 from .karel_ascii import AsciiKarelWorld, compare_output
 from .karel_world import COLOR_MAP, INFINITY, Direction, KarelWorld
 
@@ -405,6 +407,19 @@ class KarelProgram:
                               False otherwise
         """
         return self.world.corner_color(self.avenue, self.street) == color
+
+    def random(self, p: float) -> bool:
+        if 0 <= p <= 1:
+            r = uniform(0, 1)
+            return p > r
+
+        raise KarelException(
+            self.avenue,
+            self.street,
+            self.direction,
+            "Karel attempted to compare a random value, 0 <= x <= 1, "
+            "to {p}, which is invalid.",
+        )
 
 
 class KarelException(Exception):  # noqa: N818

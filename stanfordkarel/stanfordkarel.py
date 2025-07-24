@@ -123,6 +123,10 @@ def corner_color_is(color: str) -> bool:
     return True
 
 
+def random(p: float) -> bool:
+    raise NotImplementedError
+
+
 def run_karel_program(world_file: str = "") -> None:
     # Extract the name of the file the student is executing
     student_code_file = Path(sys.argv[0])

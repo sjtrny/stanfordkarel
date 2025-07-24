@@ -14,6 +14,7 @@ PROBLEMS = (
     "midpoint_karel",
     "triple_karel",
     "stone_mason_karel",
+    "random",
 )
 STUDENT_CODE_DIR = Path("solutions")
 TIMEOUT = 10

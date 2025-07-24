@@ -124,6 +124,7 @@ class StudentCode:
             "right_is_clear",
             "paint_corner",
             "corner_color_is",
+            "random",
         ]
         for mod in self.mods:
             for func in functions_to_override:
