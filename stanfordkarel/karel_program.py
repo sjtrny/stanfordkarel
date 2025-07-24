@@ -19,6 +19,8 @@ Date of Creation: 10/1/2019
 
 from __future__ import annotations
 
+from random import uniform
+
 from .karel_ascii import AsciiKarelWorld, compare_output
 from .karel_world import COLOR_MAP, INFINITY, Direction, KarelWorld
 
@@ -405,6 +407,10 @@ class KarelProgram:
                               False otherwise
         """
         return self.world.corner_color(self.avenue, self.street) == color
+
+    def random(self, p: float) -> bool:
+        r = uniform(0, 1)
+        return p > r
 
 
 class KarelException(Exception):  # noqa: N818
