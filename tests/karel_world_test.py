@@ -156,4 +156,4 @@ class TestKarelWorld:
     @staticmethod
     def test_random() -> None:
         test_program = KarelProgram("5x5")
-        test_program.random(0.5)
+        test_program.random(1)
