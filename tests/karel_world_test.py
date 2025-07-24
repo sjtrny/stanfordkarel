@@ -152,3 +152,8 @@ class TestKarelWorld:
         ref_program = KarelProgram("1x1")
 
         assert ref_program.world == test_program.world
+
+    @staticmethod
+    def test_random() -> None:
+        test_program = KarelProgram("5x5")
+        test_program.random(0.5)

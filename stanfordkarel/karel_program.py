@@ -409,8 +409,17 @@ class KarelProgram:
         return self.world.corner_color(self.avenue, self.street) == color
 
     def random(self, p: float) -> bool:
-        r = uniform(0, 1)
-        return p > r
+        if 0 <= p <= 1:
+            r = uniform(0, 1)
+            return p > r
+
+        raise KarelException(
+            self.avenue,
+            self.street,
+            self.direction,
+            "Karel attempted to compare a random value, 0 <= x <= 1, "
+            "to {p}, which is invalid.",
+        )
 
 
 class KarelException(Exception):  # noqa: N818
