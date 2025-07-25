@@ -68,7 +68,9 @@ class KarelProgram:
 
     def __repr__(self) -> str:
         """Creates a Karel World in ASCII Art!"""
-        return str(AsciiKarelWorld(self.world, self.street, self.avenue))
+        return str(
+            AsciiKarelWorld(self.world, self.street, self.avenue, self.direction)
+        )
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelProgram):

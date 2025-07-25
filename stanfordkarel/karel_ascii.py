@@ -26,31 +26,63 @@ BEEPER_COORDS = dict[tuple[int, int], int]
 class Tile:
     def __init__(self, value: str = "·") -> None:
         self.value = value
+        self.direction: Direction | None = None
         self.walls: list[Direction] = []
         self.beepers = 0
         self.color = BLANK
 
-    def __repr__(self) -> str:
-        result = ""
-        if self.value == "K" and self.beepers > 0:
-            result = "<K>"
-        elif self.beepers > 0:
-            result = f"<{self.beepers}>"
-        elif self.color != BLANK:
-            result = self.color[:3]
+    def custom_repr(self, show_only: str | None = None) -> str:
+        if not show_only:
+            if self.value == "K" and self.beepers > 0:
+                return "<K>".center(CHAR_WIDTH)
+            if self.beepers > 0:
+                return f"<{self.beepers}>".center(CHAR_WIDTH)
+            if self.color != BLANK:
+                return self.color[:3].center(CHAR_WIDTH)
+            return self.value.center(CHAR_WIDTH)
+
+        if show_only == "karel":
+            if self.value == "K":
+                if self.direction == Direction.EAST:
+                    result = "→"
+                elif self.direction == Direction.SOUTH:
+                    result = "↓"
+                elif self.direction == Direction.WEST:
+                    result = "←"
+                else:
+                    result = "↑"
+            else:
+                result = "·"
+        elif show_only == "beeper":
+            result = f"<{self.beepers}>" if self.beepers > 0 else "·"
+        elif show_only == "color":
+            result = self.color[:3] if self.color != BLANK else "·"
         else:
-            result = self.value
+            result = "·"
+
         return result.center(CHAR_WIDTH)
+
+    def __repr__(self) -> str:
+        return self.custom_repr()
 
 
 class AsciiKarelWorld:
-    def __init__(self, world: KarelWorld, karel_street: int, karel_avenue: int) -> None:
+    def __init__(
+        self,
+        world: KarelWorld,
+        karel_street: int,
+        karel_avenue: int,
+        karel_direction: Any,
+    ) -> None:
         num_sts, num_aves = world.num_streets, world.num_avenues
         # Initialize Tiles
         self.world_arr = [[Tile() for _ in range(num_aves)] for _ in range(num_sts)]
 
         # Add Karel
         self.world_arr[num_sts - karel_street][karel_avenue - 1].value = "K"
+        self.world_arr[num_sts - karel_street][
+            karel_avenue - 1
+        ].direction = karel_direction
         for (avenue, street), count in world.beepers.items():
             self.world_arr[num_sts - street][avenue - 1].beepers = count
 
@@ -68,7 +100,7 @@ class AsciiKarelWorld:
         self.num_streets = num_sts
         self.num_avenues = num_aves
 
-    def __repr__(self) -> str:
+    def custom_repr(self, show_only: str | None = None) -> str:
         avenue_widths = HORIZONTAL * ((CHAR_WIDTH + 1) * self.num_avenues + 1)
         result = f"┌{avenue_widths}┐\n"
         for r in range(self.num_streets):
@@ -81,7 +113,7 @@ class AsciiKarelWorld:
                 next_line += line
                 result += (
                     VERTICAL if self.tile_pair_has_wall(r, c, Direction.WEST) else " "
-                ) + str(tile)
+                ) + tile.custom_repr(show_only)
 
             result += f" {VERTICAL}\n"
             if r == self.num_streets - 1:
@@ -89,6 +121,9 @@ class AsciiKarelWorld:
             else:
                 result += f"{next_line} {VERTICAL}\n"
         return result
+
+    def __repr__(self) -> str:
+        return self.custom_repr()
 
     def tile_has_wall(self, r: int, c: int, direction: Direction) -> bool:
         if 0 <= r < self.num_streets and 0 <= c < self.num_avenues:
